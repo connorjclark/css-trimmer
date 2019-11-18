@@ -1,0 +1,461 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot /fixtures/1 1`] = `
+"=========
+file://.../fixtures/1/index.html (3 unused declarations)
+=========
+:5 div { color: red; /* unused! */ }
+:13 .never-used { color: blue; /* unused! */ }
+:14 .never-used { display: block; /* unused! */ }
+
+-----
+total unused declarations: 3
+
+=========
+DEBUG
+=========
+
+- collections
+
+test/fixtures/1/index.html initial
+
+- incremental coverage
+
+unusedDeclarationCount 3 test/fixtures/1/index.html initial
+
+- used ranges count
+
+used ranges 1 test/fixtures/1/index.html initial"
+`;
+
+exports[`snapshot /fixtures/2 1`] = `
+"=========
+file://.../fixtures/2/style.css (2 unused declarations)
+=========
+:10 .never-used { color: blue; /* unused! */ }
+:11 .never-used { display: block; /* unused! */ }
+
+-----
+total unused declarations: 2
+
+=========
+DEBUG
+=========
+
+- collections
+
+test/fixtures/2/index.html initial
+
+- incremental coverage
+
+unusedDeclarationCount 2 test/fixtures/2/index.html initial
+
+- used ranges count
+
+used ranges 2 test/fixtures/2/index.html initial"
+`;
+
+exports[`snapshot /fixtures/3 1`] = `
+"=========
+file://.../fixtures/3/style.css (1 unused declarations)
+=========
+:14 .used-by-neither { color: red; /* unused! */ }
+
+-----
+total unused declarations: 1
+
+=========
+DEBUG
+=========
+
+- collections
+
+test/fixtures/3/a.html initial
+test/fixtures/3/b.html initial
+
+- incremental coverage
+
+unusedDeclarationCount 2 test/fixtures/3/a.html initial
+unusedDeclarationCount 1 test/fixtures/3/b.html initial
+
+- used ranges count
+
+used ranges 2 test/fixtures/3/a.html initial
+used ranges 2 test/fixtures/3/b.html initial"
+`;
+
+exports[`snapshot /fixtures/4 1`] = `
+"=========
+file://.../fixtures/4/index.html (1 unused declarations)
+=========
+:14 .never-used { color: red; /* unused! */ }
+
+-----
+total unused declarations: 1
+
+=========
+DEBUG
+=========
+
+- collections
+
+test/fixtures/4/index.html initial
+test/fixtures/4/index.html viewport 500,500
+
+- incremental coverage
+
+unusedDeclarationCount 2 test/fixtures/4/index.html initial
+unusedDeclarationCount 1 test/fixtures/4/index.html viewport 500,500
+
+- used ranges count
+
+used ranges 1 test/fixtures/4/index.html initial
+used ranges 1 test/fixtures/4/index.html viewport 500,500"
+`;
+
+exports[`snapshot /fixtures/5 1`] = `
+"=========
+file://.../fixtures/5/index.html (0 unused declarations)
+=========
+
+-----
+total unused declarations: 0
+
+=========
+DEBUG
+=========
+
+- collections
+
+test/fixtures/5/index.html initial
+
+- incremental coverage
+
+unusedDeclarationCount 0 test/fixtures/5/index.html initial
+
+- used ranges count
+
+used ranges 2 test/fixtures/5/index.html initial"
+`;
+
+exports[`snapshot /fixtures/6 1`] = `
+"=========
+file://.../fixtures/6/index.html (1 unused declarations)
+=========
+:14 .never-used { color: var(--color-red); /* unused! */ }
+
+-----
+total unused declarations: 1
+
+=========
+DEBUG
+=========
+
+- collections
+
+test/fixtures/6/index.html initial
+
+- incremental coverage
+
+unusedDeclarationCount 1 test/fixtures/6/index.html initial
+
+- used ranges count
+
+used ranges 1 test/fixtures/6/index.html initial"
+`;
+
+exports[`snapshot /fixtures/7 1`] = `
+"=========
+file://.../fixtures/7/index-2.html (1 unused declarations)
+=========
+:13 .never-used { color: red; /* unused! */ }
+
+-----
+total unused declarations: 1
+
+=========
+DEBUG
+=========
+
+- collections
+
+test/fixtures/7/index-2.html initial
+test/fixtures/7/index.html initial
+
+- incremental coverage
+
+unusedDeclarationCount 2 test/fixtures/7/index-2.html initial
+unusedDeclarationCount 1 test/fixtures/7/index.html initial
+
+- used ranges count
+
+used ranges 1 test/fixtures/7/index-2.html initial
+used ranges 1 test/fixtures/7/index.html initial"
+`;
+
+exports[`snapshot /fixtures/8 1`] = `
+"=========
+file://.../fixtures/8/index.html (2 unused declarations)
+=========
+:9 .never-used::before { color: blue; /* unused! */ }
+:10 .never-used::before { display: block; /* unused! */ }
+
+-----
+total unused declarations: 2
+
+=========
+DEBUG
+=========
+
+- collections
+
+test/fixtures/8/index.html initial
+
+- incremental coverage
+
+unusedDeclarationCount 2 test/fixtures/8/index.html initial
+
+- used ranges count
+
+used ranges 1 test/fixtures/8/index.html initial"
+`;
+
+exports[`snapshot /fixtures/lh 1`] = `
+"=========
+file://.../fixtures/lh/report-1.html (112 unused declarations)
+=========
+:249 .lh-sparkline { display: none; }
+:286 .lh-devtools.lh-root { height: 100%; }
+:290 .lh-devtools.lh-root img { min-width: auto; }
+:293 .lh-devtools .lh-container { overflow-y: scroll; }
+:294 .lh-devtools .lh-container { height: calc(100% - var(--topbar-height)); }
+:298 .lh-devtools .lh-container { overflow: unset; }
+:303 .lh-devtools .lh-sticky-header { top: 0; }
+:327 .lh-root :focus { outline: -webkit-focus-ring-color auto 3px; }
+:330 .lh-root summary:focus { outline: none; }
+:331 .lh-root summary:focus { box-shadow: 0 0 0 1px hsl(217, 89%, 61%); }
+:388 .lh-details.flex .lh-code { max-width: 70%; }
+:398 .lh-audit__stackpack__img { margin-right: var(--default-padding) }
+:407 .report-icon:hover { opacity: 1; }
+:410 .report-icon[disabled] { opacity: 0.3; }
+:411 .report-icon[disabled] { pointer-events: none; }
+:540 .lh-audit__header:hover { background-color: var(--color-hover); }
+:551 .lh-audit-group > summary::-webkit-details-marker { display: none; }
+:576 .lh-column:first-of-type { margin-right: 24px; }
+:612 .lh-metric__details { order: -1; }
+:644 .lh-metrics-toggle__input:checked ~ .lh-columns .lh-metric__description { display: block; }
+:658 .lh-metrics-toggle__label { background-color: #eee; }
+:667 .lh-metrics-toggle__input:focus + label { outline: -webkit-focus-ring-color auto 3px; }
+:683 .lh-metrics-toggle__lines { fill: var(--metric-toggle-lines-fill); }
+:742 .lh-metric--error .lh-metric__value { color: var(--color-fail-secondary); }
+:796 .lh-audit--pass .lh-sparkline__bar { background: var(--color-pass); }
+:887 .lh-audit-group--budgets .lh-table tbody tr td:nth-child(4) { color: var(--color-red-700); }
+:892 .lh-audit-group--budgets .lh-table tbody tr td:nth-child(4) { text-align: right; }
+:896 .lh-audit-group--budgets .lh-table { width: 100%; }
+:912 .lh-audit-group--pwa-fast-reliable.lh-badged .lh-audit-group__header::before { background-image: var(--pwa-fast-reliable-color-url); }
+:915 .lh-audit-group--pwa-installable.lh-badged .lh-audit-group__header::before { background-image: var(--pwa-installable-color-url); }
+:918 .lh-audit-group--pwa-optimized.lh-badged .lh-audit-group__header::before { background-image: var(--pwa-optimized-color-url); }
+:922 .lh-audit-group--metrics .lh-audit-group__summary { margin-top: 0; }
+:923 .lh-audit-group--metrics .lh-audit-group__summary { margin-bottom: 0; }
+:934 .lh-audit-group__itemcount { color: var(--color-gray-600); }
+:935 .lh-audit-group__itemcount { font-weight: bold; }
+:938 .lh-audit-group__header .lh-chevron { margin-top: calc((var(--report-line-height) - 5px) / 2); }
+:992 .lh-list > div:not(:last-child) { padding-bottom: 20px; }
+:1007 .lh-exception { font-size: large; }
+:1028 .lh-warnings--toplevel { color: var(--report-text-color-secondary); }
+:1029 .lh-warnings--toplevel { margin-left: auto; }
+:1030 .lh-warnings--toplevel { margin-right: auto; }
+:1031 .lh-warnings--toplevel { max-width: calc(var(--report-width) - var(--category-padding) * 2); }
+:1032 .lh-warnings--toplevel { background-color: var(--color-amber-50); }
+:1033 .lh-warnings--toplevel { padding: var(--toplevel-warning-padding); }
+:1053 .lh-scores-header__solo { padding: 0; }
+:1054 .lh-scores-header__solo { border: 0; }
+:1078 .lh-gauge { stroke-linecap: round; }
+:1079 .lh-gauge { width: var(--gauge-circle-size); }
+:1080 .lh-gauge { height: var(--gauge-circle-size); }
+:1088 .lh-gauge-base { opacity: 0.1; }
+:1089 .lh-gauge-base { stroke: var(--circle-background); }
+:1090 .lh-gauge-base { stroke-width: var(--circle-border-width); }
+:1094 .lh-gauge-arc { fill: none; }
+:1095 .lh-gauge-arc { stroke: var(--circle-color); }
+:1096 .lh-gauge-arc { stroke-width: var(--circle-border-width); }
+:1097 .lh-gauge-arc { animation: load-gauge var(--transition-length) ease forwards; }
+:1098 .lh-gauge-arc { animation-delay: 250ms; }
+:1111 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { width: var(--plugin-badge-size); }
+:1112 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { height: var(--plugin-badge-size); }
+:1113 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { background-color: var(--plugin-badge-background-color); }
+:1114 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { background-image: var(--plugin-icon-url); }
+:1115 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { background-repeat: no-repeat; }
+:1116 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { background-size: var(--plugin-icon-size); }
+:1117 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { background-position: 58% 50%; }
+:1118 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { content: \\"\\"; }
+:1119 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { position: absolute; }
+:1120 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { right: -6px; }
+:1121 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { bottom: 0px; }
+:1122 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { display: block; }
+:1123 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { z-index: 100; }
+:1124 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { box-shadow: 0 0 4px rgba(0,0,0,.2); }
+:1125 .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { border-radius: 25%; }
+:1128 .lh-category .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { width: var(--plugin-badge-size-big); }
+:1129 .lh-category .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before { height: var(--plugin-badge-size-big); }
+:1230 .lh-header--solo-category .lh-scores-wrapper { display: none; }
+:1278 .lh-category-header .lh-audit__title { font-size: var(--category-header-font-size); }
+:1279 .lh-category-header .lh-audit__title { line-height: var(--header-line-height); }
+:1303 #lh-log.show { opacity: 1; }
+:1304 #lh-log.show { transform: translateY(0); }
+:1317 body { -webkit-print-color-adjust: exact; /* print background colors */ }
+:1320 .lh-container { display: block; }
+:1323 .lh-report { margin-left: 0; }
+:1324 .lh-report { padding-top: 0; }
+:1327 .lh-categories { margin-top: 0; }
+:1406 .lh-text__url-host { font-size: 90% }
+:1417 .lh-unknown pre { overflow: scroll; }
+:1418 .lh-unknown pre { border: solid 1px var(--color-gray-200); }
+:1427 .lh-text__url > a:hover { text-decoration: underline dotted #999; }
+:1437 .lh-chevron { width: var(--chevron-size); }
+:1438 .lh-chevron { height: var(--chevron-size); }
+:1439 .lh-chevron { margin-top: calc((var(--report-line-height) - 12px) / 2); }
+:1443 .lh-chevron__lines { transition: transform 0.4s; }
+:1444 .lh-chevron__lines { transform: translateY(var(--report-line-height)); }
+:1447 .lh-chevron__line { stroke: var(--chevron-line-stroke); }
+:1448 .lh-chevron__line { stroke-width: var(--chevron-size); }
+:1449 .lh-chevron__line { stroke-linecap: square; }
+:1450 .lh-chevron__line { transform-origin: 50%; }
+:1451 .lh-chevron__line { transform: rotate(var(--chevron-angle)); }
+:1452 .lh-chevron__line { transition: transform 300ms, stroke 300ms; }
+:1459 .lh-audit-group > summary > .lh-audit-group__summary > .lh-chevron .lh-chevron__line-right { transform: rotate(var(--chevron-angle-right)); }
+:1464 .lh-audit-group[open] > summary > .lh-audit-group__summary > .lh-chevron .lh-chevron__line-right { transform: rotate(var(--chevron-angle)); }
+:1469 .lh-audit-group[open] > summary > .lh-audit-group__summary > .lh-chevron .lh-chevron__lines { transform: translateY(calc(var(--chevron-size) * -1)); }
+:1501 .tooltip-boundary:hover { background-color: var(--color-hover); }
+:1505 .tooltip-boundary:hover .tooltip { display: block; }
+:1506 .tooltip-boundary:hover .tooltip { animation: fadeInTooltip 250ms; }
+:1507 .tooltip-boundary:hover .tooltip { animation-fill-mode: forwards; }
+:1508 .tooltip-boundary:hover .tooltip { animation-delay: 850ms; }
+:1509 .tooltip-boundary:hover .tooltip { bottom: 100%; }
+:1510 .tooltip-boundary:hover .tooltip { z-index: 1; }
+:1511 .tooltip-boundary:hover .tooltip { will-change: opacity; }
+:1512 .tooltip-boundary:hover .tooltip { right: 0; }
+:1513 .tooltip-boundary:hover .tooltip { pointer-events: none; }
+
+=========
+unknown (16 unused declarations)
+=========
+:16 .lh-topbar__logo { width: var(--topbar-logo-size); }
+:17 .lh-topbar__logo { height: var(--topbar-logo-size); }
+:18 .lh-topbar__logo { user-select: none; }
+:19 .lh-topbar__logo { flex: none; }
+:22 .lh-topbar__logo .shape { fill: var(--report-text-color); }
+:53 .lh-tools__button svg { fill: var(--tools-icon-color); }
+:56 .dark .lh-tools__button svg { filter: invert(1); }
+:71 .lh-tools__dropdown { right: 0; }
+:74 .lh-tools__dropdown { clip: rect(0, 164px, 0, 0); }
+:75 .lh-tools__dropdown { visibility: hidden; }
+:76 .lh-tools__dropdown { opacity: 0; }
+:101 .dark .report-icon { color: var(--color-gray-900); }
+:102 .dark .report-icon { filter: invert(1); }
+:106 .dark .lh-tools__dropdown a:hover { background-color: #BDBDBD; }
+:126 .lh-topbar { position: static; }
+:127 .lh-topbar { margin-left: 0; }
+
+=========
+unknown (4 unused declarations)
+=========
+:32 .lh-sticky-header--visible { display: grid; }
+:33 .lh-sticky-header--visible { grid-auto-flow: column; }
+:34 .lh-sticky-header--visible { pointer-events: auto; }
+:40 .lh-sticky-header .lh-gauge-arc { animation: none; }
+
+=========
+unknown (4 unused declarations)
+=========
+:11 .score100 .pyro { display: block; }
+:14 .score100 .lh-lighthouse stop:first-child { stop-color: hsla(200, 12%, 95%, 0); }
+:17 .score100 .lh-lighthouse stop:last-child { stop-color: hsla(65, 81%, 76%, 1); }
+:35 .fireworks-paused .pyro > div { animation-play-state: paused; }
+
+=========
+unknown (0 unused declarations)
+=========
+
+=========
+unknown (3 unused declarations)
+=========
+:25 .lh-crc .crc-tree { font-size: 14px; }
+:26 .lh-crc .crc-tree { width: 100%; }
+:27 .lh-crc .crc-tree { overflow-x: auto; }
+
+=========
+unknown (0 unused declarations)
+=========
+
+-----
+total unused declarations: 139
+
+=========
+DEBUG
+=========
+
+- collections
+
+test/fixtures/lh/report-1.html viewport 500,500
+test/fixtures/lh/report-2.html initial
+test/fixtures/lh/report-6.html initial
+test/fixtures/lh/report-6.html viewport 500,500
+
+- incremental coverage
+
+unusedDeclarationCount 182 test/fixtures/lh/report-1.html viewport 500,500
+unusedDeclarationCount 166 test/fixtures/lh/report-2.html initial
+unusedDeclarationCount 143 test/fixtures/lh/report-6.html initial
+unusedDeclarationCount 139 test/fixtures/lh/report-6.html viewport 500,500
+
+- used ranges count
+
+used ranges 475 test/fixtures/lh/report-1.html viewport 500,500
+used ranges 461 test/fixtures/lh/report-2.html initial
+used ranges 482 test/fixtures/lh/report-6.html initial
+used ranges 487 test/fixtures/lh/report-6.html viewport 500,500"
+`;
+
+exports[`snapshot https://www.example.com 1`] = `
+"=========
+https://www.example.com/ (0 unused declarations)
+=========
+
+-----
+total unused declarations: 0
+
+=========
+DEBUG
+=========
+
+- collections
+
+https://www.example.com initial
+https://www.example.com colorScheme dark
+https://www.example.com viewport 500,500
+
+- incremental coverage
+
+unusedDeclarationCount 2 https://www.example.com initial
+unusedDeclarationCount 2 https://www.example.com colorScheme dark
+unusedDeclarationCount 0 https://www.example.com viewport 500,500
+
+- used ranges count
+
+used ranges 12 https://www.example.com initial
+used ranges 12 https://www.example.com colorScheme dark
+used ranges 12 https://www.example.com viewport 500,500
+
+- minimal collections
+
+https://www.example.com viewport 500,500
+https://www.example.com initial
+
+- not in minimal
+
+https://www.example.com colorScheme dark
+
+to run just the minimal collections, use:
+--only-collections 'https://www.example.com viewport 500,500' 'https://www.example.com initial'"
+`;

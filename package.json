@@ -1,0 +1,29 @@
+{
+  "name": "css-trimmer",
+  "version": "0.1.0",
+  "main": "src/css-trimmer.js",
+  "bin": {
+    "css-trimmer": "./src/cli.js"
+  },
+  "files": [
+    "src"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "css": "^2.2.4",
+    "yargs": "^14.2.0"
+  },
+  "peerDependencies": {
+    "puppeteer": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/css": "^0.0.31",
+    "@types/jest": "^24.0.23",
+    "@types/puppeteer": "^1.20.2",
+    "devtools-protocol": "^0.0.715684",
+    "jest": "^24.9.0",
+    "lighthouse": "^5.6.0",
+    "puppeteer": "^2.0.0",
+    "typescript": "^3.7.2"
+  }
+}

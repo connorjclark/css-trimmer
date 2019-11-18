@@ -1,0 +1,12 @@
+div {
+  color: red;
+}
+
+.used {
+  color: green;
+}
+
+.never-used {
+  color: blue; /* unused! */
+  display: block; /* unused! */
+}

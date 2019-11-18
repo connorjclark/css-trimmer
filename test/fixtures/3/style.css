@@ -1,0 +1,15 @@
+.used-by-a {
+  color: red;
+}
+
+.used-by-b {
+  color: red;
+}
+
+.used-by-both {
+  color: red;
+}
+
+.used-by-neither {
+  color: red; /* unused! */
+}

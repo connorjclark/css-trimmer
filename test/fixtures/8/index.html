@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<head>
+  <style>
+    .used::before {
+      color: green;
+    }
+
+    .never-used::before {
+      color: blue; /* unused! */
+      display: block; /* unused! */
+    }
+  </style>
+</head>
+<body>
+  <div class="used">hi</div>
+</body>
+</html>

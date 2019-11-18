@@ -1,0 +1,23 @@
+<!-- This file has the same inline styles, but some differences before and after.
+     They should be deduped in the report. -->
+<!DOCTYPE html>
+<head>
+  <title>hi</title>
+  <style>
+    div {
+      color: blue;
+    }
+
+    .used {
+      color: green;
+    }
+
+    .never-used {
+      color: red; /* unused! */
+    }
+  </style>
+</head>
+<body>
+  <div>hi</div>
+</body>
+</html>

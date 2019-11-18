@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<head>
+  <style>
+    div {
+      --color-black: black;
+      --color-red: red; /* TODO: report this as unused */
+    }
+
+    .used {
+      color: var(--color-black);
+    }
+
+    .never-used {
+      color: var(--color-red); /* unused! */
+    }
+  </style>
+</head>
+<body>
+  <div class="used">hi</div>
+</body>
+</html>
