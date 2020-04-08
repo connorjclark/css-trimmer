@@ -11,4 +11,4 @@ for (const [i, file] of Object.entries(files)) {
   fs.writeFileSync(`${__dirname}/fixtures/lh/report-${Number(i) + 1}.html`, report);
 }
 
-// node src/cli.js --html-files test/fixtures/lh/*.html --viewports=500,500 --color-scheme=dark --debug
+// node src/cli.js test/fixtures/lh/*.html --viewports=500,500 --color-scheme=dark --debug

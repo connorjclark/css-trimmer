@@ -30,10 +30,8 @@ const argv = yargs
     'quiet',
   ])
   .array([
-    'html-files',
     'only-collections',
     'skip-collections',
-    'urls',
     'viewports',
   ])
   .string([
