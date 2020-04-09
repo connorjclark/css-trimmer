@@ -33,21 +33,21 @@ function defineTest(name, args) {
   });
 }
 
-for (const name of fs.readdirSync(__dirname + '/fixtures')) {
-  const dir = `test/fixtures/${name}`;
-  const configPath = `${dir}/config.js`;
-  const htmlFiles = fs
-    .readdirSync(dir)
-    .filter(file => file.endsWith('.html'))
-    .map(file => `${dir}/${file}`);
+// for (const name of fs.readdirSync(__dirname + '/fixtures')) {
+//   const dir = `test/fixtures/${name}`;
+//   const configPath = `${dir}/config.js`;
+//   const htmlFiles = fs
+//     .readdirSync(dir)
+//     .filter(file => file.endsWith('.html'))
+//     .map(file => `${dir}/${file}`);
 
-  const args = [
-    '--disable-default-config',
-    ...htmlFiles,
-  ];
-  if (fs.existsSync(configPath)) args.push(`--config-path=${configPath}`);
-  defineTest(`/fixtures/${name}`, args);
-}
+//   const args = [
+//     '--disable-default-config',
+//     ...htmlFiles,
+//   ];
+//   if (fs.existsSync(configPath)) args.push(`--config-path=${configPath}`);
+//   defineTest(`/fixtures/${name}`, args);
+// }
 
 defineTest('https://www.example.com', [
   'https://www.example.com',

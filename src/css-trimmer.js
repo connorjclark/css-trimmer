@@ -2,6 +2,8 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const css = require('css');
 
+const libCode = require('fs').readFileSync(`${__dirname}/../lib/css-utilities/css-utilities.js`, 'utf-8');
+
 /** @typedef {import('puppeteer').Browser} Browser */
 /** @typedef {import('puppeteer').Page} Page */
 /** @typedef {Crdp.Protocol.CSS.CSSStyleSheetHeader} ProtocolStyleSheet */
@@ -42,7 +44,7 @@ const css = require('css');
 /**
  * @typedef Collection
  * @property {string} name
- * @property {CollectionEntry[]} entries
+ * @property {StylesheetData[]} stylesheets
  */
 
 /**
@@ -52,7 +54,7 @@ const css = require('css');
 /**
  * @typedef Report
  * @property {DebugInfo=} debug
- * @property {Array<any>} styleSheets
+ * @property {ReturnType<getResults>} styleSheets
  * @property {string} output
  * @property {string[]} warnings
  * @property {number} unusedDeclarationCount
@@ -64,6 +66,21 @@ const css = require('css');
  * @property {number[]} incrementalCoverage
  * @property {string[]} minimalCollectionNames
  * @property {number[]} usedRangeCounts
+ */
+
+/**
+ * @typedef StylesheetData
+ * @property {number} ssid
+ * @property {string|null} href
+ * @property {string} owner
+ * @property {RuleData[]} rules
+ */
+
+/**
+ * @typedef RuleData
+ * @property {string} selector
+ * @property {string} css
+ * @property {Record<string, {value: string, status: 'unused'|'canceled'|'active'}>} properties
  */
 
 /**
@@ -88,29 +105,29 @@ function findOrMakeCollectionEntry(entries, styleSheet) {
 }
 
 /**
- * @param {CollectionEntry[]} entries
- * @param {ProtocolStyleSheet} styleSheet
+ * @param {StylesheetData[]} styleSheets
+ * @param {StylesheetData} needle
  */
-function findCollectionEntry(entries, styleSheet) {
-  for (const entry of entries) {
+function findCollectionEntry(styleSheets, needle) {
+  for (const styleSheet of styleSheets) {
     // The same id is obviously the same style sheet.
-    if (styleSheet.styleSheetId === entry.styleSheet.styleSheetId) {
-      return entry;
+    if (styleSheet.ssid === needle.ssid) {
+      return styleSheet;
     }
 
     // Dito for the URL.
-    if (styleSheet.sourceURL && !styleSheet.isInline && entry.styleSheet.sourceURL === styleSheet.sourceURL) {
-      return entry;
-    }
+    // if (styleSheet.sourceURL && !styleSheet.isInline && entry.styleSheet.sourceURL === styleSheet.sourceURL) {
+    //   return entry;
+    // }
   }
 
   // Style sheets of the same length are probably the same styles.
   // Could just check if the content is the same, but that is expensive over the protocol.
-  const potentialEntries = entries.filter(entry => entry.styleSheet.length === styleSheet.length);
-  if (potentialEntries.length === 1) return potentialEntries[0];
-  if (potentialEntries.length > 1) {
-    console.warn('found multiple potential styles for', styleSheet);
-  }
+  // const potentialEntries = entries.filter(entry => entry.styleSheet.length === styleSheet.length);
+  // if (potentialEntries.length === 1) return potentialEntries[0];
+  // if (potentialEntries.length > 1) {
+  //   console.warn('found multiple potential styles for', styleSheet);
+  // }
 
   return null;
 }
@@ -130,19 +147,26 @@ function combineCollections(collections) {
   /** @type {Collection} */
   const combined = {
     name: 'combined',
-    entries: [],
+    stylesheets: [],
   };
 
   for (const collection of collections) {
-    for (const entry of collection.entries) {
-      const combinedEntry = findCollectionEntry(combined.entries, entry.styleSheet);
+    for (const stylesheet of collection.stylesheets) {
+      const combinedEntry = findCollectionEntry(combined.stylesheets, stylesheet);
       if (combinedEntry) {
-        entry.usedRanges.forEach(range => combinedEntry.usedRanges.add(clone(range)));
+        for (const rule of stylesheet.rules) {
+          const combinedRule = combinedEntry.rules.find(r => r.selector === rule.selector);
+          if (!combinedRule) continue;
+
+          for (const [property, object] of Object.entries(rule.properties)) {
+            const combinedPropertyObject = combinedRule.properties[property];
+            if (combinedPropertyObject.status === 'active') continue;
+            combinedPropertyObject.status = object.status;
+          }
+        }
       } else {
-        combined.entries.push({
-          styleSheet: entry.styleSheet,
-          content: entry.content,
-          usedRanges: new Set(entry.usedRanges),
+        combined.stylesheets.push({
+          ...stylesheet,
         });
       }
     }
@@ -321,8 +345,53 @@ async function collect(name, context) {
 
   const { current } = context;
 
-  // @ts-ignore
-  const nodes = await getNodes(context);
+  function getStylesheets() {
+    // @ts-ignore
+    // CSSUtilities.init();
+    // CSSUtilities.define("mode", "author");
+
+    const stylesheets = CSSUtilities.getCSSStyleSheets().map(ss => {
+      delete ss.stylesheet;
+      return {
+        ...ss,
+        // TODO: remove css?
+        rules: CSSUtilities.getCSSStyleSheetRules('all', 'css,properties,selector', ss.ssid),
+      };
+    });
+
+    for (const stylesheet of stylesheets) {
+      for (const rule of stylesheet.rules) {
+        for (const [property, value] of Object.entries(rule.properties)) {
+          rule.properties[property] = {
+            value,
+            status: 'unused',
+          };
+        }
+      }
+    }
+
+    for (const el of document.querySelectorAll('*')) {
+      const ruleUsages = CSSUtilities.getCSSRules(el, 'all', 'properties,selector,ssid');
+      for (const ruleUsage of ruleUsages) {
+        if (!ruleUsage.properties) continue; // ?
+
+        const stylesheet = stylesheets.find(s => s.ssid === ruleUsage.ssid);
+        if (!stylesheet) continue; // ?
+
+        const rule = stylesheet.rules.find(r => r.selector === ruleUsage.selector);
+        for (const [property, { status }] of Object.entries(ruleUsage.properties)) {
+          if (!rule.properties[property]) continue; // ?
+          if (rule.properties[property].status === 'active') continue;
+          rule.properties[property].status = status;
+        }
+      }
+    }
+
+    return stylesheets;
+  }
+  /** @type {StylesheetData[]} */
+  const stylesheets = await current.page.evaluate(`${libCode}; (${getStylesheets})();`);
+  console.log(JSON.stringify(stylesheets, null, 2));
 
   // TODO: make a super selector of all the CSS rules, and only grab those Nodes.
   // const body = nodes.find(n => n.nodeName === 'BODY');
@@ -332,65 +401,8 @@ async function collect(name, context) {
   /** @type {Collection} */
   const collection = {
     name,
-    entries: [],
+    stylesheets,
   };
-
-  /**
-   * @param {any} rule
-   * @param {ValidProtocolCSSProperty} property
-   */
-  function processActiveProperty(rule, property) {
-    if (rule.origin === 'user-agent') return;
-
-    const id = rule.styleSheetId;
-    const styleSheet = current.styleSheetMap.get(id);
-    if (!styleSheet) throw new Error('shouldnt happen');
-    const collectionEntry = findOrMakeCollectionEntry(collection.entries, styleSheet);
-    const range = property.range;
-    collectionEntry.usedRanges.add(`${range.startLine},${range.startColumn},${range.endLine},${range.endColumn}`);
-  }
-
-  await Promise.all(nodes.map(async ({ nodeId, nodeName }) => {
-    const matchedStyles = await current.client.send('CSS.getMatchedStylesForNode', { nodeId });
-    const activeStyles = findActiveStyles(matchedStyles);
-
-    if (!activeStyles) {
-      // TODO: understand this case.
-      context.warnings.push(`could not find styles ${nodeId}`);
-      return;
-    }
-
-    for (const [key, value] of activeStyles.entries()) {
-      if (!value) {
-        // TODO: understand this case.
-        context.warnings.push(`null value in activeStyles ${key}`);
-        continue;
-      }
-
-      const { rule, property } = value;
-      processActiveProperty(rule, property);
-    }
-
-    // Handle pseudo elements.
-    if (matchedStyles.pseudoElements) {
-      for (const { matches } of matchedStyles.pseudoElements) {
-        for (const { rule } of matches) {
-          for (const property of rule.style.cssProperties) {
-            if (!isValidProperty(property)) continue;
-            processActiveProperty(rule, property);
-          }
-        }
-      }
-    }
-  }));
-
-  for (const entry of collection.entries) {
-    if (entry.content) continue;
-    const data = await current.client.send('CSS.getStyleSheetText', {
-      styleSheetId: entry.styleSheet.styleSheetId,
-    });
-    entry.content = data.text;
-  }
 
   context.collections.push(collection);
 }
@@ -400,10 +412,10 @@ async function collect(name, context) {
  */
 function getResults(collection) {
   const resultsByStyleSheets = [];
-  for (const entry of collection.entries) {
+  for (const styleSheet of collection.stylesheets) {
     /** @type {any[]} */ // TODO
     const rules = [];
-    const ast = css.parse(entry.content);
+    // const ast = css.parse(styleSheet.content);
 
     /**
      * @param {css.Rule & css.Media} rule
@@ -425,7 +437,7 @@ function getResults(collection) {
 
           const p = declaration.position;
           // @ts-ignore: can these even be undefined?
-          const isUsed = entry.usedRanges.has(`${p.start.line - 1},${p.start.column - 1},${p.end.line - 1},${p.end.column}`);
+          const isUsed = styleSheet.usedRanges.has(`${p.start.line - 1},${p.start.column - 1},${p.end.line - 1},${p.end.column}`);
           if (isUsed) return;
 
           // TODO: check if variables are used.
@@ -490,21 +502,28 @@ function getResults(collection) {
       });
     }
 
-    if (!ast.stylesheet) throw new Error('bad ast');
+    // if (!ast.stylesheet) throw new Error('bad ast');
 
-    for (const rule of ast.stylesheet.rules) {
-      process(rule);
+    // for (const rule of ast.stylesheet.rules) {
+    //   process(rule);
+    // }
+
+    // const unusedDeclarationCount = sum(rules.map(r => r.unusedDeclarations.length));
+    let unusedDeclarationCount = 0;
+    for (const rule of styleSheet.rules) {
+      for (const property of Object.values(rule.properties)) {
+        if (property.status !== 'active') unusedDeclarationCount++;
+      }
     }
 
-    const unusedDeclarationCount = sum(rules.map(r => r.unusedDeclarations.length));
-
     resultsByStyleSheets.push({
-      url: entry.styleSheet.sourceURL,
-      isInline: entry.styleSheet.isInline,
-      startLine: entry.styleSheet.startLine,
-      startColumn: entry.styleSheet.startColumn,
-      content: entry.content,
-      rules,
+      url: styleSheet.href,
+      // isInline: styleSheet.styleSheet.isInline,
+      // startLine: styleSheet.styleSheet.startLine,
+      // startColumn: styleSheet.styleSheet.startColumn,
+      // content: styleSheet.content,
+      content: '...',
+      rules: styleSheet.rules,
       unusedDeclarationCount,
     });
   }
@@ -522,10 +541,10 @@ function findMinimalCollections(context) {
   // Add a collection by most unique used range.
   /** @type {Map<string, number>} index + range => count */
   const usedRangeCount = new Map();
-  for (let i = 0; i < combined.entries.length; i++) {
-    const canonicalEntry = combined.entries[i];
+  for (let i = 0; i < combined.stylesheets.length; i++) {
+    const canonicalEntry = combined.stylesheets[i];
     for (const collection of context.collections) {
-      const collectionEntry = findCollectionEntry(collection.entries, canonicalEntry.styleSheet);
+      const collectionEntry = findCollectionEntry(collection.stylesheets, canonicalEntry);
       if (!collectionEntry) continue;
 
       for (const range of collectionEntry.usedRanges) {
@@ -576,19 +595,22 @@ function makeTextOutput(report) {
   const totalUnusedDeclarationCount = sum(styleSheets.map(r => r.unusedDeclarationCount));
 
   let output = styleSheets.map(result => {
-    const contentLines = result.content.split('\n');
     const outputLines = [];
 
     outputLines.push('=========');
-    outputLines.push((result.url || 'unknown') + ` (${result.unusedDeclarationCount} unused declarations)`);
+    outputLines.push((result.url || 'unknown url') + ` (${result.unusedDeclarationCount} unused declarations)`);
     outputLines.push('=========');
 
     for (const rule of result.rules) {
-      for (const declaration of rule.unusedDeclarations) {
-        let linenum = declaration.position.start.line;
-        const lineContent = contentLines[linenum].trim();
-        if (result.isInline) linenum += result.startLine;
-        outputLines.push(`:${linenum + 1} ${rule.selectors[0]} { ${lineContent} }`);
+      const unusedPropertyLines = [];
+      for (const [property, propertyObject] of Object.entries(rule.properties)) {
+        if (propertyObject.status === 'active') continue;
+        unusedPropertyLines.push(`  ${property}: ${propertyObject.value}`);
+      }
+      if (unusedPropertyLines.length) {
+        outputLines.push(`${rule.selector} {`);
+        outputLines.push(...unusedPropertyLines);
+        outputLines.push('}');
       }
     }
 
@@ -609,25 +631,25 @@ function makeTextOutput(report) {
       lines.push(`unusedDeclarationCount ${n} ${name}`);
     }
 
-    lines.push('\n- used ranges count\n');
-    for (const [i, n] of Object.entries(report.debug.usedRangeCounts)) {
-      const name = report.debug.collectionNames[Number(i)];
-      lines.push(`used ranges ${n} ${name}`);
-    }
+    // lines.push('\n- used ranges count\n');
+    // for (const [i, n] of Object.entries(report.debug.usedRangeCounts)) {
+    //   const name = report.debug.collectionNames[Number(i)];
+    //   lines.push(`used ranges ${n} ${name}`);
+    // }
 
-    if (report.debug.minimalCollectionNames.length !== report.debug.collectionNames.length) {
-      lines.push('\n- minimal collections\n');
-      for (const name of report.debug.minimalCollectionNames) {
-        lines.push(name);
-      }
+    // if (report.debug.minimalCollectionNames.length !== report.debug.collectionNames.length) {
+    //   lines.push('\n- minimal collections\n');
+    //   for (const name of report.debug.minimalCollectionNames) {
+    //     lines.push(name);
+    //   }
 
-      const notInMinimal = report.debug.collectionNames
-        .filter(name => report.debug && !report.debug.minimalCollectionNames.includes(name));
-      lines.push('\n- not in minimal\n');
-      lines.push(...notInMinimal);
-      lines.push('\nto run just the minimal collections, use:');
-      lines.push('--only-collections ' + report.debug.minimalCollectionNames.map(n => `'${n}'`).join(' '));
-    }
+    //   const notInMinimal = report.debug.collectionNames
+    //     .filter(name => report.debug && !report.debug.minimalCollectionNames.includes(name));
+    //   lines.push('\n- not in minimal\n');
+    //   lines.push(...notInMinimal);
+    //   lines.push('\nto run just the minimal collections, use:');
+    //   lines.push('--only-collections ' + report.debug.minimalCollectionNames.map(n => `'${n}'`).join(' '));
+    // }
 
     output += lines.join('\n');
   }
@@ -659,7 +681,7 @@ function finish(context) {
     /** @type {Collection} */
     let combined = {
       name: '',
-      entries: [],
+      stylesheets: [],
     };
     const incrementalCoverage = [];
     for (const nextCollection of context.collections) {
@@ -669,17 +691,17 @@ function finish(context) {
       incrementalCoverage.push(partialCount);
     }
 
-    const usedRangeCounts = context.collections
-      .map(collection => sum(collection.entries.map(e => e.usedRanges.size)));
+    // const usedRangeCounts = context.collections
+    //   .map(collection => sum(collection.stylesheets.map(e => e.usedRanges.size)));
 
-    const minimalCollections = findMinimalCollections(context);
-    const minimalCollectionNames = minimalCollections.map(c => c.name);
+    // const minimalCollections = findMinimalCollections(context);
+    // const minimalCollectionNames = minimalCollections.map(c => c.name);
 
     report.debug = {
       collectionNames: context.collections.map(c => c.name),
       incrementalCoverage,
-      minimalCollectionNames,
-      usedRangeCounts,
+      // minimalCollectionNames,
+      // usedRangeCounts,
     };
   }
 
